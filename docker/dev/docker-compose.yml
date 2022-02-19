@@ -1,0 +1,39 @@
+version: '3.5'
+services:
+  api_platform_test_db:
+    container_name: api_platform_test_db
+    image: postgres:14
+    environment:
+      POSTGRES_USER: api_platform_test
+      POSTGRES_PASSWORD: toor
+    volumes:
+      - api_platform_test_db_volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      api_platform_test_network:
+  api_platform_test_webserver:
+    container_name: api_platform_test_webserver
+    image: raraworks/dev_stack:php8.1node_lts
+    volumes:
+      - ../../src:/var/www/html
+      - ./conf.d:/etc/nginx/conf.d
+      - ./certs:/etc/ssl/private
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api_platform_test_db
+    restart: always
+    networks:
+      api_platform_test_network:
+    #    Uncomment two following lines on linux and append with your host main IP to enable Xdebug
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+volumes:
+  api_platform_test_db_volume:
+    name: api_platform_test_db_volume
+networks:
+  api_platform_test_network:
+    name: api_platform_test_network
