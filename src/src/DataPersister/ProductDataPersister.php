@@ -3,7 +3,7 @@
 namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
-use App\ApiResource\Product;
+use App\ApiResource\ProductResource;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class ProductDataPersister implements ContextAwareDataPersisterInterface
@@ -17,7 +17,7 @@ final class ProductDataPersister implements ContextAwareDataPersisterInterface
      */
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof Product;
+        return $data instanceof ProductResource;
     }
 
     /**

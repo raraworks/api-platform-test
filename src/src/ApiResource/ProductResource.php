@@ -6,7 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use DateTimeInterface;
 
 #[ApiResource]
-class Product
+class ProductResource
 {
     /**
      * @param string|null $id
