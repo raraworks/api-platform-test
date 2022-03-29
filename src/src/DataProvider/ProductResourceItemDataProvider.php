@@ -5,7 +5,7 @@ namespace App\DataProvider;
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\ApiResource\ProductResource;
-use App\Entity\Product;
+use App\Entity\Speciality;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
 
@@ -21,7 +21,7 @@ class ProductResourceItemDataProvider implements ItemDataProviderInterface, Rest
      */
     public function __construct(ManagerRegistry $doctrine)
     {
-        $this->repository = $doctrine->getRepository(Product::class);
+        $this->repository = $doctrine->getRepository(Speciality::class);
     }
 
     /**
@@ -30,7 +30,7 @@ class ProductResourceItemDataProvider implements ItemDataProviderInterface, Rest
     public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ProductResource|null
     {
         $product = $this->repository->find($id);
-        if (!$product instanceof Product) {
+        if (!$product instanceof Speciality) {
             return null;
         }
         return new ProductResource(

@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
+use App\Repository\SpecialityRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ORM\Index(columns: ["sku"], name: "idx_product_sku")]
-#[ORM\Index(columns: ["slug"], name: "idx_product_slug")]
-class Product
+#[ORM\Entity(repositoryClass: SpecialityRepository::class)]
+#[ORM\Index(columns: ["position"], name: "idx_speciality_position")]
+#[ORM\Index(columns: ["slug"], name: "idx_speciality_slug")]
+#[ORM\Index(columns: ["active"], name: "idx_speciality_active")]
+class Speciality
 {
     /**
      * @var string|null
@@ -21,12 +22,6 @@ class Product
     #[ORM\CustomIdGenerator('doctrine.uuid_generator')]
     #[ORM\Column(type: 'uuid', unique: true)]
     private string|null $id = null;
-
-    /**
-     * @var string|null
-     */
-    #[ORM\Column(type: 'string', length: 255)]
-    private string|null $sku = null;
 
     /**
      * @var string|null
@@ -47,10 +42,16 @@ class Product
     private string|null $description = null;
 
     /**
-     * @var string|null
+     * @var int|null
      */
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private string|null $imageFile = null;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private int|null $position = null;
+
+    /**
+     * @var bool
+     */
+    #[ORM\Column(type: 'boolean')]
+    private bool $active = false;
 
     /**
      * @var DateTimeInterface|null
@@ -73,20 +74,39 @@ class Product
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getSku(): string|null
+    public function getPosition(): int|null
     {
-        return $this->sku;
+        return $this->position;
     }
 
     /**
-     * @param string|null $sku
+     * @param int|null $position
      * @return $this
      */
-    public function setSku(string|null $sku): self
+    public function setPosition(int|null $position): self
     {
-        $this->sku = $sku;
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getActive(): bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param bool $active
+     * @return $this
+     */
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }
@@ -143,24 +163,6 @@ class Product
     public function setDescription(string|null $description): self
     {
         $this->description = $description;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getImageFile(): string|null
-    {
-        return $this->imageFile;
-    }
-
-    /**
-     * @param string|null $imageFile
-     * @return $this
-     */
-    public function setImageFile(string|null $imageFile): self
-    {
-        $this->imageFile = $imageFile;
         return $this;
     }
 
