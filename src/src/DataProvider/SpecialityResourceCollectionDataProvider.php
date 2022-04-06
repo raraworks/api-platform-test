@@ -4,12 +4,11 @@ namespace App\DataProvider;
 
 use ApiPlatform\Core\DataProvider\CollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use App\ApiResource\ProductResource;
 use App\Entity\Speciality;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
 
-class ProductResourceCollectionDataProvider implements CollectionDataProviderInterface, RestrictedDataProviderInterface
+class SpecialityResourceCollectionDataProvider implements CollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     private ObjectRepository $repository;
 
@@ -25,7 +24,7 @@ class ProductResourceCollectionDataProvider implements CollectionDataProviderInt
     {
         $products = $this->repository->findAll();
         return array_map(static function (Speciality $product) {
-            return new ProductResource(
+            return new Spec(
                 id: $product->getId(),
                 sku: $product->getSku(),
                 title: $product->getTitle(),

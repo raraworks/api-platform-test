@@ -3,7 +3,7 @@
 namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
-use App\ApiResource\ServiceResource;
+use App\ApiResource\SpecialityResource;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
@@ -27,7 +27,7 @@ final class ServiceResourceDataPersister implements ContextAwareDataPersisterInt
      */
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof ServiceResource;
+        return $data instanceof SpecialityResource;
     }
 
     /**
