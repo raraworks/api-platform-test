@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\SpecialistRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SpecialistRepository::class)]
@@ -36,6 +38,14 @@ class Specialist
 
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable|null $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'specialist', targetEntity: Consultation::class)]
+    private ArrayCollection $consultations;
+
+    public function __construct()
+    {
+        $this->consultations = new ArrayCollection();
+    }
 
     public function getId(): int|null
     {
@@ -122,6 +132,36 @@ class Specialist
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Consultation>
+     */
+    public function getConsultations(): Collection
+    {
+        return $this->consultations;
+    }
+
+    public function addConsultation(Consultation $consultation): self
+    {
+        if (!$this->consultations->contains($consultation)) {
+            $this->consultations[] = $consultation;
+            $consultation->setSpecialist($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConsultation(Consultation $consultation): self
+    {
+        if ($this->consultations->removeElement($consultation)) {
+            // set the owning side to null (unless already changed)
+            if ($consultation->getSpecialist() === $this) {
+                $consultation->setSpecialist(null);
+            }
+        }
 
         return $this;
     }
