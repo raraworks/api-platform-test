@@ -18,4 +18,25 @@ class SpecialityRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Speciality::class);
     }
+
+    /**
+     * @return Speciality[]
+     */
+    public function getAllActive(): array
+    {
+        return $this->findBy(['isActive' => true]);
+    }
+
+    /**
+     * @return Speciality[]
+     */
+    public function getAllActiveWithConsultations(): array
+    {
+        return $this->getEntityManager()->createQuery(
+            'SELECT s, c
+            FROM App\Entity\Speciality s
+            LEFT JOIN s.consultations c 
+            WHERE s.isActive = :isActive'
+        )->setParameter('isActive', true)->getResult();
+    }
 }

@@ -43,8 +43,8 @@ class Speciality
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable|null $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'speciality', targetEntity: Consultation::class)]
-    private ArrayCollection $consultations;
+    #[ORM\OneToMany(mappedBy: 'speciality', targetEntity: Consultation::class, orphanRemoval: true)]
+    private Collection $consultations;
 
     public function __construct()
     {
