@@ -2,27 +2,24 @@
 
 namespace App\DataProvider;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\PaginationExtension;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Core\DataProvider\CollectionDataProviderInterface;
+use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\ApiResource\SpecialityResource;
-use App\Repository\SpecialityRepository;
 
-class SpecialityResourceCollectionDataProvider implements CollectionDataProviderInterface, RestrictedDataProviderInterface
+class SpecialityResourceCollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    private SpecialityRepository $repository;
+    private CollectionDataProviderInterface $collectionDataProvider;
 
-    private PaginationExtension $pagination;
-
-    public function __construct(SpecialityRepository $repository, PaginationExtension $pagination)
+    public function __construct(CollectionDataProviderInterface $collectionDataProvider)
     {
-        $this->pagination = $pagination;
-        $this->repository = $repository;
+        $this->collectionDataProvider = $collectionDataProvider;
     }
 
-    public function getCollection(string $resourceClass, string $operationName = null): iterable
+    public function getCollection(string $resourceClass, string $operationName = null, array $context = []): iterable
     {
+        $this->collectionDataProvider->getCollection($resourceClass, $operationName, $context);
             $this->pagination->applyToCollection($this->repository->getAllActiveWithConsultations(), new QueryNameGenerator(), $resourceClass, $operationName);
             if ($this->pagination->supportsResult($resourceClass, $operationName)) {
                 return $this->pagination->getResult($this->repository->getAllActiveWithConsultations(), $resourceClass, $operationName);
