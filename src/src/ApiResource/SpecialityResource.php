@@ -5,6 +5,7 @@ namespace App\ApiResource;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource(collectionOperations: ['get'], itemOperations: ['get'], shortName: 'Speciality', normalizationContext: ['groups' => ['speciality:read']])]
 class SpecialityResource
@@ -29,5 +30,6 @@ class SpecialityResource
      * @var ConsultationResource[]|null
      */
     #[Groups(['speciality:read'])]
-    public array|null $consultations = null;
+    #[ORM\OneToMany(mappedBy: "speciality", targetEntity: ConsultationResource::class)]
+    public array|null $consultations = [];
 }

@@ -5,6 +5,7 @@ namespace App\DataProvider;
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\ApiResource\SpecialityResource;
+use App\DataTransformer\SpecialityResourceTransformer;
 use App\Entity\Speciality;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
@@ -31,16 +32,11 @@ class SpecialityResourceItemDataProvider implements ItemDataProviderInterface, R
         if (!Uuid::isValid($id)) {
             throw new NotFoundHttpException();
         }
-        $product = $this->repository->find($id);
-        if (!$product instanceof Speciality) {
+        $speciality = $this->repository->find($id);
+        if (!$speciality instanceof Speciality) {
             return null;
         }
-        return new SpecialityResource(
-            id: $product->getId(),
-            title: $product->getTitle(),
-            slug: $product->getSlug(),
-            description: $product->getDescription(),
-        );
+        return (new SpecialityResourceTransformer())->transform($speciality, SpecialityResource::class);
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
