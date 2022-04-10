@@ -4,7 +4,7 @@ namespace App\ApiResource;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 
-#[ApiResource(shortName: 'Speciality')]
+#[ApiResource(collectionOperations: ['get'], itemOperations: ['get'], shortName: 'Speciality')]
 class SpecialityResource
 {
     public function __construct(

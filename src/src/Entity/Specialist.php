@@ -40,7 +40,7 @@ class Specialist
     private DateTimeImmutable|null $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'specialist', targetEntity: Consultation::class)]
-    private ArrayCollection $consultations;
+    private Collection $consultations;
 
     public function __construct()
     {

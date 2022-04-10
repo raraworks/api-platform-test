@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Speciality;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,19 +26,19 @@ class SpecialityRepository extends ServiceEntityRepository
      */
     public function getAllActive(): array
     {
-        return $this->findBy(['isActive' => true]);
+        return $this->findBy(['isActive' => true], ['position' => 'ASC']);
     }
 
     /**
-     * @return Speciality[]
+     * @return QueryBuilder
      */
-    public function getAllActiveWithConsultations(): array
+    public function getAllActiveWithConsultations(): QueryBuilder
     {
-        return $this->getEntityManager()->createQuery(
-            'SELECT s, c
-            FROM App\Entity\Speciality s
-            LEFT JOIN s.consultations c 
-            WHERE s.isActive = :isActive'
-        )->setParameter('isActive', true)->getResult();
+        return $this->getEntityManager()->createQueryBuilder('s')->andWhere('s.isActive = :isActive')
+            ->setParameter('isActive', true)->orderBy('s.position', 'ASC');
+//            'SELECT s, c
+//            FROM App\Entity\Speciality s
+//            LEFT JOIN s.consultations c
+//            WHERE s.isActive = :isActive'
     }
 }

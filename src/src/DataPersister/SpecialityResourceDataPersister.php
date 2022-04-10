@@ -25,25 +25,25 @@ final class SpecialityResourceDataPersister implements ContextAwareDataPersister
     }
 
     /**
-     * @param SpecialityResource $data
+     * @param \App\ApiResource\SpecialityResource $data
      */
     public function persist($data, array $context = [])
     {
         $speciality = new Speciality();
-        $speciality->setTitle($data->title);
-        $speciality->setSlug($data->slug);
-        $speciality->setDescription($data->description);
-        $speciality->setIsActive(true);
-        $speciality->setPosition(1);
-        $speciality->setCreatedAt(new DateTimeImmutable());
-        $speciality->setUpdatedAt(new DateTimeImmutable());
+        $speciality->setTitle($data->title)
+            ->setSlug($data->slug)
+            ->setDescription($data->description)
+            ->setIsActive(true)
+            ->setPosition(1)
+            ->setCreatedAt(new DateTimeImmutable())
+            ->setUpdatedAt(new DateTimeImmutable());
         $this->entityManager->persist($speciality);
         $this->entityManager->flush();
         return new Response('Saved new speciality');
     }
 
     /**
-     * @param SpecialityResource $data
+     * @param \App\ApiResource\SpecialityResource $data
      */
     public function remove($data, array $context = []): void
     {
