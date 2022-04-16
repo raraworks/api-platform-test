@@ -9,7 +9,6 @@ use App\DataMapper\PersonResourceDataMapper;
 use App\Entity\Person;
 use App\Repository\PersonRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\QueryBuilder;
 
 class PersonResourceItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
@@ -23,7 +22,7 @@ class PersonResourceItemDataProvider implements ItemDataProviderInterface, Restr
     /**
      * @throws NonUniqueResultException
      */
-    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): PersonResource|null
+    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = [])
     {
         $entity = $this->repository->createQueryBuilder('p')
             ->select('p, co, c')
@@ -36,6 +35,7 @@ class PersonResourceItemDataProvider implements ItemDataProviderInterface, Restr
         if (!$entity instanceof Person) {
             return null;
         }
+        return $entity;
         //TODO: create mapper service that returns populated/hydrated resource POPO, to pass to default serializer (normalizer/encoder process)
         return (new PersonResourceDataMapper())->mapToApiResource(PersonResource::class, $entity);
     }

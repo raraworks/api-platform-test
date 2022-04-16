@@ -6,7 +6,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use DateTimeImmutable;
 
-#[ApiResource(shortName: 'person')]
+#[ApiResource(shortName: 'person', attributes: ['pagination_fetch_join_collection' => true])]
 class PersonResource
 {
     #[ApiProperty(identifier: true)]
@@ -18,12 +18,12 @@ class PersonResource
      * @var ClientObjectResource[]|null
      */
     #[ApiProperty(readableLink: true)]
-    public array|null $clientObjects = null;
+    public array $clientObjects = [];
     /**
      * @var ClientResource[]|null
      */
     #[ApiProperty(readableLink: true)]
-    public array|null $clients = null;
+    public array $clients = [];
     public DateTimeImmutable|null $createdAt = null;
     public DateTimeImmutable|null $updatedAt = null;
 }
