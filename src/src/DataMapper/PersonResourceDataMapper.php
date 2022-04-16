@@ -3,6 +3,7 @@
 namespace App\DataMapper;
 
 use App\ApiResource\ClientObjectResource;
+use App\ApiResource\ClientResource;
 use App\ApiResource\PersonResource;
 use App\Entity\Person;
 
@@ -31,6 +32,19 @@ class PersonResourceDataMapper
             $clientObjectResource->createdAt = $clientObject->getCreatedAt();
             $clientObjectResource->updatedAt = $clientObject->getUpdatedAt();
             $resourceInstance->clientObjects[] = $clientObjectResource;
+        }
+        foreach ($ormEntity->getClients() as $client) {
+            $clientResource = new ClientResource();
+            $clientResource->id = $client->getId();
+            $clientResource->person = $resourceInstance;
+            $clientResource->title = $client->getTitle();
+            $clientResource->notes = $client->getNotes();
+            $clientResource->regNo = $client->getRegNo();
+            $clientResource->address = $client->getAddress();
+            $clientResource->billingAddress = $client->getBillingAddress();
+            $clientResource->createdAt = $client->getCreatedAt();
+            $clientResource->updatedAt = $client->getUpdatedAt();
+            $resourceInstance->clients[] = $clientResource;
         }
         return $resourceInstance;
     }

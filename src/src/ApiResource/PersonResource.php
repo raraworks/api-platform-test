@@ -19,6 +19,11 @@ class PersonResource
      */
     #[ApiProperty(readableLink: true)]
     public array|null $clientObjects = null;
+    /**
+     * @var ClientResource[]|null
+     */
+    #[ApiProperty(readableLink: true)]
+    public array|null $clients = null;
     public DateTimeImmutable|null $createdAt = null;
     public DateTimeImmutable|null $updatedAt = null;
 }
