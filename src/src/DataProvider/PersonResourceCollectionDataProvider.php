@@ -23,14 +23,14 @@ class PersonResourceCollectionDataProvider implements ContextAwareCollectionData
 
     public function getCollection(string $resourceClass, string $operationName = null, array $context = []): iterable
     {
-        [$page, $offset, $limit] = $this->pagination->getPagination($resourceClass, $operationName, $context);
+        [, $offset, $limit] = $this->pagination->getPagination($resourceClass, $operationName, $context);
         $query = $this->repository->createQueryBuilder('p')
             ->select('p, co, c')
             ->leftJoin('p.clientObjects', 'co')
             ->leftJoin('p.clients', 'c')
             ->getQuery()
             ->setFirstResult($offset)
-            ->setMaxResults($page * $limit);
+            ->setMaxResults($limit);
         return new ApiPlatformPaginator(new Paginator($query, true));
 
     }
