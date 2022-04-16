@@ -14,6 +14,11 @@ class PersonResource
     public string|null $fullName = null;
     public string|null $email = null;
     public string|null $phoneNo = null;
+    /**
+     * @var ClientObjectResource[]|null
+     */
+    #[ApiProperty(readableLink: true)]
+    public array|null $clientObjects = null;
     public DateTimeImmutable|null $createdAt = null;
     public DateTimeImmutable|null $updatedAt = null;
 }

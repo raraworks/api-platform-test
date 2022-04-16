@@ -5,6 +5,7 @@ namespace App\DataProvider;
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\ApiResource\PersonResource;
+use App\DataMapper\PersonResourceDataMapper;
 use App\Entity\Person;
 use App\Repository\PersonRepository;
 
@@ -24,16 +25,11 @@ class PersonResourceItemDataProvider implements ItemDataProviderInterface, Restr
         if (!$entity instanceof Person) {
             return null;
         }
-        //normalize to array with the help of mapper
-        $return = new PersonResource();
-        $return->id = $entity->getId();
-        $return->fullName = "{$entity->getFirstName()} {$entity->getLastName()}";
-        $return->email = $entity->getEmail();
-        $return->phoneNo = $entity->getPhoneNo();
-        $return->createdAt = $entity->getCreatedAt();
-        $return->updatedAt = $entity->getUpdatedAt();
-        //use default encoder logic
-        return $return;
+        foreach ($entity->getClientObjects() as $clientObject) {
+            $entity->addClientObject($clientObject);
+        }
+        //TODO: create mapper service that returns populated/hydrated resource POPO, to pass to default serializer (normalizer/encoder process)
+        return (new PersonResourceDataMapper())->mapToApiResource(PersonResource::class, $entity);
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
