@@ -29,20 +29,19 @@ class PersonResourceDataPersister implements ContextAwareDataPersisterInterface
 
     /**
      * @inheritDoc
+     * @param PersonResource $data
      */
-    public function persist($data, array $context = [])
+    public function persist($data, array $context = []): PersonResource
     {
         if (isset($context['collection_operation_name']) && $context['collection_operation_name'] === strtolower(Request::METHOD_POST)) {
             $entity = new Person();
-            (new PersonResourceDataMapper())->mapToOrmEntity($entity, $data);
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
-            return (new PersonResourceDataMapper())->mapToApiResource(PersonResource::class, $entity);
         } else {
-            // update existing record
-            $ok = $data;
+            $entity = $this->repository->find($data->id);
         }
-        // TODO: Implement persist() method.
+        (new PersonResourceDataMapper())->mapToOrmEntity($entity, $data);
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+        return (new PersonResourceDataMapper())->mapToApiResource(PersonResource::class, $entity);
     }
 
     /**

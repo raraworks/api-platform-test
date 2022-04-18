@@ -18,6 +18,7 @@ class ClientObjectResource
     public string|null $contractNo = null;
     public float|null $hourlyRate = null;
     public PersonResource|null $person = null;
+    public ClientResource|null $client = null;
     public DateTimeImmutable|null $createdAt = null;
     public DateTimeImmutable|null $updatedAt = null;
 }

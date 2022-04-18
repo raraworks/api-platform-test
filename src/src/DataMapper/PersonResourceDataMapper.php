@@ -16,7 +16,7 @@ class PersonResourceDataMapper
         $resourceInstance->id = $ormEntity->getId();
         $resourceInstance->fullName = "{$ormEntity->getFirstName()} {$ormEntity->getLastName()}";
         $resourceInstance->firstName = $ormEntity->getFirstName();
-        $resourceInstance->lastName = $ormEntity->getFirstName();
+        $resourceInstance->lastName = $ormEntity->getLastName();
         $resourceInstance->email = $ormEntity->getEmail();
         $resourceInstance->phoneNo = $ormEntity->getPhoneNo();
         $resourceInstance->createdAt = $ormEntity->getCreatedAt();
