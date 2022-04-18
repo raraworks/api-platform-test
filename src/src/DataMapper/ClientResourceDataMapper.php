@@ -38,9 +38,10 @@ class ClientResourceDataMapper
 
     public function mapToOrmEntity(Client $ormEntity, ClientResource $resourceInstance): void
     {
-//        $ormEntity->setFirstName($resourceInstance->firstName);
-//        $ormEntity->setLastName($resourceInstance->lastName);
-//        $ormEntity->setEmail($resourceInstance->email);
-//        $ormEntity->setPhoneNo($resourceInstance->phoneNo);
+        $ormEntity->setTitle($resourceInstance->title);
+        $ormEntity->setAddress($resourceInstance->address);
+        $ormEntity->setRegNo($resourceInstance->regNo);
+        $ormEntity->setBillingAddress($resourceInstance->billingAddress);
+        $ormEntity->setNotes($resourceInstance->notes);
     }
 }

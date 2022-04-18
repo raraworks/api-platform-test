@@ -5,6 +5,7 @@ namespace App\DataNormalizer;
 use App\ApiResource\PersonResource;
 use App\DataMapper\PersonResourceDataMapper;
 use App\Entity\Person;
+use App\Repository\ClientRepository;
 use ArrayObject;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
@@ -15,6 +16,12 @@ class PersonResourceNormalizer implements ContextAwareNormalizerInterface, Norma
     use NormalizerAwareTrait;
 
     private const ALREADY_CALLED = 'PERSON_RESOURCE_NORMALIZER';
+    protected ClientRepository $clientRepository;
+
+    public function __construct(ClientRepository $clientRepository)
+    {
+        $this->clientRepository = $clientRepository;
+    }
 
     /**
      * @inheritDoc
@@ -29,6 +36,6 @@ class PersonResourceNormalizer implements ContextAwareNormalizerInterface, Norma
      */
     public function normalize(mixed $object, string $format = null, array $context = []): float|array|ArrayObject|bool|int|string|null
     {
-        return $this->normalizer->normalize((new PersonResourceDataMapper())->mapToApiResource(PersonResource::class, $object), $format, $context);
+        return $this->normalizer->normalize((new PersonResourceDataMapper($this->clientRepository))->mapToApiResource(PersonResource::class, $object), $format, $context);
     }
 }

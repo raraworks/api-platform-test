@@ -5,10 +5,19 @@ namespace App\DataMapper;
 use App\ApiResource\ClientObjectResource;
 use App\ApiResource\ClientResource;
 use App\ApiResource\PersonResource;
+use App\Entity\Client;
 use App\Entity\Person;
+use App\Repository\ClientRepository;
 
 class PersonResourceDataMapper
 {
+    protected ClientRepository $clientRepository;
+
+    public function __construct(ClientRepository $clientRepository)
+    {
+        $this->clientRepository = $clientRepository;
+    }
+
     public function mapToApiResource(string $className, Person $ormEntity): PersonResource
     {
         /** @var PersonResource $resourceInstance */
@@ -57,5 +66,29 @@ class PersonResourceDataMapper
         $ormEntity->setLastName($resourceInstance->lastName);
         $ormEntity->setEmail($resourceInstance->email);
         $ormEntity->setPhoneNo($resourceInstance->phoneNo);
+        foreach ($ormEntity->getClients() as $client) {
+            foreach ($resourceInstance->clients as $clientResource) {
+                if ($client->getId() === $clientResource->id) {
+                    continue 2;
+                }
+            }
+            $ormEntity->removeClient($client);
+        }
+        foreach ($resourceInstance->clients as $clientResource) {
+            if ($clientResource->id === null) {
+                $clientEntity = new Client();
+                $clientEntity->setTitle($clientResource->title);
+                $clientEntity->setAddress($clientResource->address);
+                $clientEntity->setRegNo($clientResource->regNo);
+                $clientEntity->setBillingAddress($clientResource->billingAddress);
+                $clientEntity->setNotes($clientResource->notes);
+                $ormEntity->addClient($clientEntity);
+            } elseif (!$ormEntity->getClients()->exists(static fn($idx, Client $client) => $client->getId() === $clientResource->id)) {
+                $clientEntity = $this->clientRepository->find($clientResource->id);
+                if (null !== $clientEntity) {
+                    $ormEntity->addClient($clientEntity);
+                }
+            }
+        }
     }
 }

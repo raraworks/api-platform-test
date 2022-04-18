@@ -6,6 +6,7 @@ use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\ApiResource\PersonResource;
 use App\DataMapper\PersonResourceDataMapper;
 use App\Entity\Person;
+use App\Repository\ClientRepository;
 use App\Repository\PersonRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -15,11 +16,13 @@ class PersonResourceDataPersister implements ContextAwareDataPersisterInterface
 {
     protected PersonRepository $repository;
     protected ObjectManager $entityManager;
+    protected ClientRepository $clientRepository;
 
-    public function __construct(PersonRepository $repository, ManagerRegistry $entityManager)
+    public function __construct(PersonRepository $repository, ManagerRegistry $entityManager, ClientRepository $clientRepository)
     {
         $this->repository = $repository;
         $this->entityManager = $entityManager->getManager();
+        $this->clientRepository = $clientRepository;
     }
 
     public function supports($data, array $context = []): bool
@@ -38,10 +41,10 @@ class PersonResourceDataPersister implements ContextAwareDataPersisterInterface
         } else {
             $entity = $this->repository->find($data->id);
         }
-        (new PersonResourceDataMapper())->mapToOrmEntity($entity, $data);
+        (new PersonResourceDataMapper($this->clientRepository))->mapToOrmEntity($entity, $data);
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
-        return (new PersonResourceDataMapper())->mapToApiResource(PersonResource::class, $entity);
+        return (new PersonResourceDataMapper($this->clientRepository))->mapToApiResource(PersonResource::class, $entity);
     }
 
     /**

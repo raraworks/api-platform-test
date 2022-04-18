@@ -7,16 +7,19 @@ use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\ApiResource\PersonResource;
 use App\DataMapper\PersonResourceDataMapper;
 use App\Entity\Person;
+use App\Repository\ClientRepository;
 use App\Repository\PersonRepository;
 use Doctrine\ORM\NonUniqueResultException;
 
 class PersonResourceItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
     private PersonRepository $repository;
+    private ClientRepository $clientRepository;
 
-    public function __construct(PersonRepository $repository)
+    public function __construct(PersonRepository $repository, ClientRepository $clientRepository)
     {
         $this->repository = $repository;
+        $this->clientRepository = $clientRepository;
     }
 
     /**
@@ -37,7 +40,7 @@ class PersonResourceItemDataProvider implements ItemDataProviderInterface, Restr
         }
 //      Could return entity, and use default normalizer, but for persistence (put/patch/delete) a entity instance will be passed to persister, instead of PersonResource instance
 //        return $entity;
-        return (new PersonResourceDataMapper())->mapToApiResource(PersonResource::class, $entity);
+        return (new PersonResourceDataMapper($this->clientRepository))->mapToApiResource(PersonResource::class, $entity);
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
