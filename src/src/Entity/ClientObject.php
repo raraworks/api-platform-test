@@ -6,7 +6,7 @@ use App\Repository\ClientObjectRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ClientObjectRepository::class)]
+#[ORM\Entity(repositoryClass: ClientObjectRepository::class), ORM\HasLifecycleCallbacks]
 #[ORM\Index(columns: ["contract_no"], name: "idx_client_object_contract_no")]
 class ClientObject
 {
@@ -185,5 +185,17 @@ class ClientObject
         $this->client = $client;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        $this->createdAt = $this->updatedAt = new DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        $this->updatedAt = new DateTimeImmutable();
     }
 }

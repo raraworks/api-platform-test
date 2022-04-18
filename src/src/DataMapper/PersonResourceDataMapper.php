@@ -15,6 +15,8 @@ class PersonResourceDataMapper
         $resourceInstance = new $className;
         $resourceInstance->id = $ormEntity->getId();
         $resourceInstance->fullName = "{$ormEntity->getFirstName()} {$ormEntity->getLastName()}";
+        $resourceInstance->firstName = $ormEntity->getFirstName();
+        $resourceInstance->lastName = $ormEntity->getFirstName();
         $resourceInstance->email = $ormEntity->getEmail();
         $resourceInstance->phoneNo = $ormEntity->getPhoneNo();
         $resourceInstance->createdAt = $ormEntity->getCreatedAt();
@@ -51,5 +53,9 @@ class PersonResourceDataMapper
 
     public function mapToOrmEntity(Person $ormEntity, PersonResource $resourceInstance): void
     {
+        $ormEntity->setFirstName($resourceInstance->firstName);
+        $ormEntity->setLastName($resourceInstance->lastName);
+        $ormEntity->setEmail($resourceInstance->email);
+        $ormEntity->setPhoneNo($resourceInstance->phoneNo);
     }
 }

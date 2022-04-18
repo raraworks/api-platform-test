@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ClientRepository::class)]
+#[ORM\Entity(repositoryClass: ClientRepository::class), ORM\HasLifecycleCallbacks]
 #[ORM\Index(columns: ["title"], name: "idx_client_title")]
 class Client
 {
@@ -196,5 +196,17 @@ class Client
         }
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        $this->createdAt = $this->updatedAt = new DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        $this->updatedAt = new DateTimeImmutable();
     }
 }

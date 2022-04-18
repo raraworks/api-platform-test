@@ -12,6 +12,8 @@ class PersonResource
     #[ApiProperty(identifier: true)]
     public int|null $id = null;
     public string|null $fullName = null;
+    public string|null $firstName = null;
+    public string|null $lastName = null;
     public string|null $email = null;
     public string|null $phoneNo = null;
     /**
