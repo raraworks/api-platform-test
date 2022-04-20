@@ -2,11 +2,20 @@
 
 namespace App\ApiResource;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Filter\SortFilter;
 use DateTimeImmutable;
 
 #[ApiResource(shortName: 'person', attributes: ['pagination_fetch_join_collection' => true])]
+#[ApiFilter(SortFilter::class, properties: ['id',
+    'firstName' => 'firstName',
+    'lastName' => 'lastName',
+    'email' => 'email',
+    'createdAt' => 'createdAt',
+    'updatedAt' => 'updatedAt',
+])]
 class PersonResource
 {
     #[ApiProperty(identifier: true)]

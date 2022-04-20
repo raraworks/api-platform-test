@@ -7,6 +7,7 @@ use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\Pagination;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\ApiResource\PersonResource;
+use App\Filter\SortFilter;
 use App\Repository\PersonRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -27,8 +28,13 @@ class PersonResourceCollectionDataProvider implements ContextAwareCollectionData
         $query = $this->repository->createQueryBuilder('p')
             ->select('p, co, c')
             ->leftJoin('p.clientObjects', 'co')
-            ->leftJoin('p.clients', 'c')
-            ->getQuery()
+            ->leftJoin('p.clients', 'c');
+        if (isset($context[SortFilter::SORT_FILTER_CONTEXT])) {
+            foreach ($context[SortFilter::SORT_FILTER_CONTEXT] as $orderByConstraint) {
+                $query->addOrderBy('p.'.$orderByConstraint['field'], $orderByConstraint['order']);
+            }
+        }
+        $query = $query->getQuery()
             ->setFirstResult($offset)
             ->setMaxResults($limit);
         return new ApiPlatformPaginator(new Paginator($query, true));
