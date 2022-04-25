@@ -7,8 +7,15 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Filter\SortFilter;
 use DateTimeImmutable;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource(shortName: 'person', attributes: ['pagination_fetch_join_collection' => true])]
+#[ApiResource(
+    shortName: 'person',
+    attributes: ['pagination_fetch_join_collection' => true],
+    denormalizationContext: ['groups' => ['person:write']],
+    normalizationContext: ['groups' => ['person:read']])
+]
 #[ApiFilter(SortFilter::class, properties: ['id',
     'firstName' => 'firstName',
     'lastName' => 'lastName',
@@ -18,23 +25,31 @@ use DateTimeImmutable;
 ])]
 class PersonResource
 {
-    #[ApiProperty(identifier: true)]
+    #[ApiProperty(identifier: true), Groups(['person:read'])]
     public int|null $id = null;
+    #[Groups(['person:read']), Assert\Type(type: 'string')]
     public string|null $fullName = null;
+    #[Assert\NotBlank, Assert\Type(type: 'string'), Assert\Length(max: 255), Groups(['person:read', 'person:write'])]
     public string|null $firstName = null;
+    #[Assert\NotBlank, Assert\Type(type: 'string'), Assert\Length(max: 255), Groups(['person:read', 'person:write'])]
     public string|null $lastName = null;
+    #[Assert\NotBlank, Assert\Type(type: 'string'), Assert\Email, Assert\Length(max: 255), Groups(['person:read', 'person:write'])]
     public string|null $email = null;
+    #[Assert\NotBlank, Assert\Type(type: 'string'), Assert\Length(max: 255), Groups(['person:read', 'person:write'])]
     public string|null $phoneNo = null;
     /**
      * @var ClientObjectResource[]|null
      */
-    #[ApiProperty(readableLink: true, writableLink: true)]
+    //TODO: Create dataProvider/dataPersister
+    #[Groups(['person:read']), Assert\Valid]
     public array $clientObjects = [];
     /**
      * @var ClientResource[]|null
      */
-    #[ApiProperty(readableLink: true, writableLink: true)]
+    #[Groups(['person:read', 'person:write']), Assert\Valid]
     public array $clients = [];
+    #[Groups(['person:read'])]
     public DateTimeImmutable|null $createdAt = null;
+    #[Groups(['person:read'])]
     public DateTimeImmutable|null $updatedAt = null;
 }
